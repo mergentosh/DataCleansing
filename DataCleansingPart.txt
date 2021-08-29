@@ -1,0 +1,99 @@
+SELECT t.last_name,c.course_title
+FROM STUDENTS s INNER JOIN STUDENT_ENROLLMENT en 
+	ON s.student_no=en.student_no INNER JOIN teach t
+	ON en.course_no=t.course_no INNER JOIN PROFESSORS pro 
+	ON pro.last_name=t.last_name INNER JOIN COURSES c
+	ON c.course_no = t.course_no
+WHERE t.last_name in ('Wilson')
+GROUP BY t.last_name,c.course_title
+
+
+
+SELECT*
+FROM professors 
+
+SELECT e.full_name,e.department,e.salary,a.avg 
+FROM EMPLOYEES e , (SELECT DEPARTMENT,AVG(SALARY) 
+					FROM EMPLOYEES 
+					GROUP BY DEPARTMENT ) a
+WHERE e.department=a.department 
+	and e.salary > a.avg
+ORDER BY a.avg desc
+
+
+
+SELECT a.*
+FROM (SELECT full_name,department,salary,
+AVG(SALARY) OVER(PARTITION BY DEPARTMENT)
+FROM EMPLOYEES ) a
+WHERE a.salary > a.avg
+
+
+
+SELECT*
+FROM STUDENTS s 
+	left JOIN student_enrollment en 
+	ON s.student_no=en.student_no 
+	INNER JOIN courses c 
+	ON c.course_no=en.course_no
+
+-----------o--------------o----------------o----------------o-----------------o-----------------o------------
+SELECT first_name,last_name,concat(first_name,' ',last_name)
+FROM EMPLOYEES 
+
+ALTER TABLE EMPLOYEES 
+DROP COLUMN FULL_NAME
+
+ALTER TABLE EMPLOYEES 
+ADD COLUMN FULL_NAME VARCHAR ; 
+
+UPDATE EMPLOYEES 
+SET full_name = CONCAT(FIRST_NAME,' ',LAST_NAME)
+
+--Check out
+SELECT FIRST_NAME,LAST_NAME,FULL_NAME
+FROM EMPLOYEES
+
+
+SELECT EMAIL,SPLIT_PART(EMAIL,'@',1) 
+FROM EMPLOYEES
+EXCEPT
+SELECT EMAIL,SUBSTRING(EMAIL,1,POSITION('@' in EMAIL)-1) 
+FROM EMPLOYEES
+
+
+SELECT DEPARTMENT,UPPER(SUBSTRING(DEPARTMENT,1,3)) AS DEPARTMENT_ALIASES
+FROM EMPLOYEES
+
+
+--Extracting year value from date 
+
+SELECT HIRE_DATE, CAST(SUBSTRING(CAST(HIRE_DATE AS TEXT),1,4) AS INT)
+FROM EMPLOYEES
+
+ALTER TABLE EMPLOYEES
+ADD COLUMN YEAR INT 
+
+UPDATE EMPLOYEES 
+SET YEAR = CAST(SUBSTRING(CAST(HIRE_DATE AS TEXT),1,4) AS INT)
+--Check out
+SELECT*
+FROM EMPLOYEES
+
+SELECT HIRE_DATE,TO_CHAR(HIRE_DATE,'DD/MM/YYYY')
+FROM EMPLOYEES
+
+
+
+
+SELECT a.*,REPLACE(email_regulated,'UNKNOWN','-')
+FROM (SELECT EMAIL ,COALESCE(NULLIF(EMAIL,' '),'UNKNOWN') AS email_regulated
+FROM EMPLOYEES) a
+
+
+
+
+
+
+
+
